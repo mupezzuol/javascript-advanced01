@@ -17,18 +17,15 @@ class NegociacaoController{
     adiciona(event){
         event.preventDefault();//Não recarrega a página após o submit
 
-        //Helper para trabalhar com Datas
-        let dateHelper = new DateHelper();
-
         //Criando obj pelo Construtor dele, já passando os valores dos campos
         let negociacao = new Negociacao(
-            dateHelper.textoParaData(this._inputData.value),
+            DateHelper.textoParaData(this._inputData.value),
             this._inputQuantidade.value,
             this._inputValor.value
         );
 
         //Mascara para exibição da data
-        let diaMesAno = dateHelper.dataParaTexto(negociacao.data);
+        let diaMesAno = DateHelper.dataParaTexto(negociacao.data);
 
         console.log(diaMesAno);
 
