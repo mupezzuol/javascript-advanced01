@@ -35,7 +35,13 @@ class NegociacaoController{
             this._inputValor.value
         );
 
-        console.log(negociacao);
+
+        //Mascara para data
+        let diaMesAno = negociacao.data.getDate()
+            + '/' + (negociacao.data.getMonth() + 1)//Preciso somar pois temos aquele problema de o Mês ir de 0 até 11
+            + '/' + negociacao.data.getFullYear();
+
+        console.log(diaMesAno);
 
     }
 
