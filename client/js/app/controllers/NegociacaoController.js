@@ -17,29 +17,18 @@ class NegociacaoController{
     adiciona(event){
         event.preventDefault();//Não recarrega a página após o submit
 
-        //Utilizo dessa forma para ser criado um Date corretamente do jeito q eu quero... Existem diversas formas
-        // Os '...' significa que cada item do meu array é respectivo para cada parametro, param 1, 2 e 3.
-        //Uso função 'map' para validar meu array, quando ele chegar no indice 1 que é referente ao mês ele fará o 'item -1' pois o Date ele vai de 0 até 11, então o mês 0 é janeiro.
-        //Uso % -> Mod, pois qnd for 1 ele fará o retorno de 1 para subtrair... (0 % 2 = 0), (1 % 2 = 1), (2 % 2 = 0)
-        //Arrow Function -> Função em Flecha.. menos verboso, não preciso de  {} para uma instrução, nem do 'return'
-        let data = new Date(...
-            this._inputData.value
-                .split('-')
-                .map((item, indice) => item - indice % 2)
-            );
+        //Helper para trabalhar com Datas
+        let dateHelper = new DateHelper();
 
         //Criando obj pelo Construtor dele, já passando os valores dos campos
         let negociacao = new Negociacao(
-            data,
+            dateHelper.textoParaData(this._inputData.value),
             this._inputQuantidade.value,
             this._inputValor.value
         );
 
-
-        //Mascara para data
-        let diaMesAno = negociacao.data.getDate()
-            + '/' + (negociacao.data.getMonth() + 1)//Preciso somar pois temos aquele problema de o Mês ir de 0 até 11
-            + '/' + negociacao.data.getFullYear();
+        //Mascara para exibição da data
+        let diaMesAno = dateHelper.dataParaTexto(negociacao.data);
 
         console.log(diaMesAno);
 
