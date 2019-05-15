@@ -9,6 +9,7 @@ class Negociacao{
         this._data = data;
         this._quantidade = quantidade;
         this._valor = valor;
+        Object.freeze(this);//Congelo essa a instancia criada, para que não seja possivel alterar nossos atributos.. this -> instancias criadas ao decorrer do programa
     }
 
 

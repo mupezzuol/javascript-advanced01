@@ -62,6 +62,11 @@
 
     <script>
         var n1 = new Negociacao(new Date(), 2, 20);
+        console.log(Object.isFrozen(n1));//TRUE -> Objeto foi congelado em nosso construtor
+        n1._quantidade = 999;//Não é possivel alterar, objeto congelado
+
+        
+
         console.log(n1.data);
         console.log(n1.quantidade);
         console.log(n1.valor);
