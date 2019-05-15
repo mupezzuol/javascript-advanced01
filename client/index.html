@@ -61,17 +61,17 @@
     <script src="js/app/models/Negociacao.js"></script>
 
     <script>
-        var n1 = new Negociacao(new Date(), 2, 20);
-        console.log(Object.isFrozen(n1));//TRUE -> Objeto foi congelado em nosso construtor
-        n1._quantidade = 999;//Não é possivel alterar, objeto congelado
-
         
+        var hoje = new Date();
+
+        var n1 = new Negociacao(hoje, 5, 700);
 
         console.log(n1.data);
-        console.log(n1.quantidade);
-        console.log(n1.valor);
-        console.log(n1.volume);
 
+        hoje.setDate(11);//Setando o Dia
+
+        console.log(n1.data);
+    
 
     </script>
 
