@@ -14,7 +14,7 @@ class NegociacaoController{
 
         //Usado para renderizar a view
         this._negociacoesView = new NegociacoesView($('#negociacoesView'));
-        this._negociacoesView.update();
+        this._negociacoesView.update(this._listaNegociacoes);
     }
 
     
@@ -24,6 +24,9 @@ class NegociacaoController{
 
         //Criando uma Negociação e Adicionando a negociacao em uma lista de negociacoes
         this._listaNegociacoes.adiciona(this._criaNegociacao());
+
+        //Chama a atualização da VIEW
+        this._negociacoesView.update(this._listaNegociacoes);
 
         //Limpa formulário
         this._limpaFormulario();
