@@ -11,6 +11,10 @@ class NegociacaoController{
         this._inputQuantidade =  $('#quantidade');
         this._inputValor = $('#valor');
         this._listaNegociacoes = new ListaNegociacoes();
+
+        //Usado para renderizar a view
+        this._negociacoesView = new NegociacoesView($('#negociacoesView'));
+        this._negociacoesView.update();
     }
 
     
