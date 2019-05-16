@@ -11,7 +11,7 @@ class DateHelper{
     //Mascara da Data para exibição
     //Preciso somar pois temos aquele problema de o Mês ir de 0 até 11
     static dataParaTexto(data){
-        return data.getDate() + '/' + (data.getMonth() + 1) + '/' + data.getFullYear();
+        return `${data.getDate()}/${data.getMonth()+1}/${data.getFullYear()}`;//-> repare que não é '' é ``
     }
     
 
