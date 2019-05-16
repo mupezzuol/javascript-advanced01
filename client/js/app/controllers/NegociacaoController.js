@@ -10,25 +10,41 @@ class NegociacaoController{
         this._inputData = $('#data');//Retorna String no formato (aaaa-MM-dd), não Date()
         this._inputQuantidade =  $('#quantidade');
         this._inputValor = $('#valor');
-}
+        this._listaNegociacoes = new ListaNegociacoes();
+    }
 
-
+    
     //Método de ADC
     adiciona(event){
         event.preventDefault();//Não recarrega a página após o submit
 
+        //Criando uma Negociação e Adicionando a negociacao em uma lista de negociacoes
+        this._listaNegociacoes.adiciona(this._criaNegociacao());
+
+        //Limpa formulário
+        this._limpaFormulario();
+
+        console.log(this._listaNegociacoes.negociacoes);
+    }
+
+
+    //Cria uma Negociação
+    _criaNegociacao(){
         //Criando obj pelo Construtor dele, já passando os valores dos campos
-        let negociacao = new Negociacao(
+        return new Negociacao(
             DateHelper.textoParaData(this._inputData.value),
             this._inputQuantidade.value,
             this._inputValor.value
         );
+    }
 
-        //Mascara para exibição da data
-        let diaMesAno = DateHelper.dataParaTexto(negociacao.data);
+    //Só a classe pode chamar o método, por isso foi usado a convenção '_'
+    _limpaFormulario() {
+        this._inputData.value = '';
+        this._inputQuantidade.value = 1;
+        this._inputValor.value = 0.0
 
-        console.log(diaMesAno);
-
+        this._inputData.focus();
     }
 
 
