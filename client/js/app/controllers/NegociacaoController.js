@@ -11,9 +11,22 @@ class NegociacaoController{
         this._inputQuantidade =  $('#quantidade');
         this._inputValor = $('#valor');
 
-        //Usando Arrow Function para não precisar ficar chamando sempre a VIEW para atualização etc...
-        this._listaNegociacoes = new ListaNegociacoes(model =>
-            this._negociacoesView.update(model));
+
+        //GAMBIARRA QUE EU NÃO ENTENDI NADA
+        let self = this;
+        this._listaNegociacoes = new Proxy(new ListaNegociacoes(), {
+            get(target, prop, receiver) {
+                if(['adiciona', 'esvazia'].includes(prop) && typeof(target[prop]) == typeof(Function)) {
+                    return function(){
+                    console.log(`método '${prop}' interceptado`);
+                    Reflect.apply(target[prop], target, arguments);
+                    self._negociacoesView.update(target);
+                    }
+            }
+            return Reflect.get(target, prop, receiver);
+        }
+        });
+        
 
         //Usado para renderizar a view
         this._negociacoesView = new NegociacoesView($('#negociacoesView'));
