@@ -10,11 +10,16 @@ class NegociacaoController{
         this._inputData = $('#data');//Retorna String no formato (aaaa-MM-dd), não Date()
         this._inputQuantidade =  $('#quantidade');
         this._inputValor = $('#valor');
-        this._listaNegociacoes = new ListaNegociacoes();
+
+        //Usando Arrow Function para não precisar ficar chamando sempre a VIEW para atualização etc...
+        this._listaNegociacoes = new ListaNegociacoes(model =>
+            this._negociacoesView.update(model));
 
         //Usado para renderizar a view
         this._negociacoesView = new NegociacoesView($('#negociacoesView'));
         this._negociacoesView.update(this._listaNegociacoes);
+
+        
 
         //Usando para mensagem para o usuário
         this._mensagem = new Mensagem();
@@ -33,9 +38,6 @@ class NegociacaoController{
         //Mensagem para o usuário
         this._mensagem.texto = 'Negociação adicionada com sucesso!';//Chama método SET
         this._mensagemView.update(this._mensagem);
-
-        //Chama a atualização da VIEW
-        this._negociacoesView.update(this._listaNegociacoes);
 
         //Limpa formulário
         this._limpaFormulario();

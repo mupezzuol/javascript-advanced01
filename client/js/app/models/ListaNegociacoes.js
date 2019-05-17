@@ -1,16 +1,19 @@
 class ListaNegociacoes{
 
-    constructor(){
+    constructor(armadilha){
         this._negociacoes = [];
+        this._armadilha = armadilha;
     }
 
     //Adc negociacao em nosso array
     adiciona(negociacao){
         this._negociacoes.push(negociacao);
+        this._armadilha(this);
     }
 
     esvazia()   {
         this._negociacoes = [];
+        this._armadilha(this);
     }
 
     //Getter's
