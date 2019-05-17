@@ -1,16 +1,10 @@
-class NegociacoesView{
+//Todos os métodos da classe VIEW são herdados para nossa classe
+class NegociacoesView extends View{
 
+    //Toda herança em JS qnd vc tem parametro no seu construtor você deve passa-lo para o PAI também
     constructor(elemento){
-        this._elemento = elemento; 
+        super(elemento);//Chama construtor da classe Pai (View.js) passando o elemento recebido
     }
-
-
-    //Chama nosso template para atualizar na view
-    update(model){
-        //innerHTML -> converte String em um Elemento do DOM, tags etc...
-        this._elemento.innerHTML = this._template(model);//Retorna o template
-    }
-
 
     //Usando Template String com -> ``
     //Usamos Arrow Function com MAP para percorrermos nosso model que é nossa lista de negociacoes

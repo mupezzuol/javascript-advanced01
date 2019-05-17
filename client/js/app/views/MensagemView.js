@@ -1,11 +1,9 @@
-class MensagemView{
+//Todos os métodos da classe VIEW são herdados para nossa classe
+class MensagemView extends View{
 
+    //Toda herança em JS qnd vc tem parametro no seu construtor você deve passa-lo para o PAI também
     constructor(elemento){
-        this._elemento = elemento;
-    }
-
-    update(model){
-        this._elemento.innerHTML = this._template(model);
+        super(elemento);//Chama construtor da classe Pai (View.js) passando o elemento recebido
     }
 
     _template(model){
