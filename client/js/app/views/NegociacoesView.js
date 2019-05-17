@@ -6,12 +6,13 @@ class NegociacoesView extends View{
         super(elemento);//Chama construtor da classe Pai (View.js) passando o elemento recebido
     }
 
+    //Sobrescrevo o método da classe PAI com a implementação diferente
     //Usando Template String com -> ``
     //Usamos Arrow Function com MAP para percorrermos nosso model que é nossa lista de negociacoes
     //para cada elemento da lista nós criamos uma TR, no final retorno uma STRING para nosso template para ele renderizar tudo
     //porém temos q juntar todos os TR em uma String só, para isso usamos o 'join()' que retorna tudo em uma string gigante unica, assim retorna todas as TR já
     //Para o TOTAL usamos o IIFE -> Criamos uma função e chamamos ela ao mesmo tempo, auto-chamada, para podermos colocar mais codigos, trab com var etc..
-    _template(model){
+    template(model){
         return `
             <table class="table table-hover table-bordered">
                 <thead>
