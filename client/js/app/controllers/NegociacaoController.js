@@ -15,6 +15,11 @@ class NegociacaoController{
         //Usado para renderizar a view
         this._negociacoesView = new NegociacoesView($('#negociacoesView'));
         this._negociacoesView.update(this._listaNegociacoes);
+
+        //Usando para mensagem para o usuário
+        this._mensagem = new Mensagem();
+        this._mensagemView = new MensagemView($('#mensagemView'));
+        this._mensagemView.update(this._mensagem);
     }
 
     
@@ -24,6 +29,10 @@ class NegociacaoController{
 
         //Criando uma Negociação e Adicionando a negociacao em uma lista de negociacoes
         this._listaNegociacoes.adiciona(this._criaNegociacao());
+
+        //Mensagem para o usuário
+        this._mensagem.texto = 'Negociação adicionada com sucesso!';//Chama método SET
+        this._mensagemView.update(this._mensagem);
 
         //Chama a atualização da VIEW
         this._negociacoesView.update(this._listaNegociacoes);
