@@ -12,17 +12,16 @@ class NegociacaoController{
         this._inputValor = $('#valor');
 
         //Chamando Proxy -> eu passo meu model, o meu contexto e os métodos q eu vou observar para que quando forem acionados eu chamao o update
-        this._negociacoesView = new NegociacoesView($('#negociacoesView'));
-        this._listaNegociacoes = new Bind (
-                new ListaNegociacoes(),
-                this._negociacoesView,
-                ['adiciona', 'esvazia']);
+        //já chamo nossa View etc... chamando métodos isolados para nos auxiliar nisso
+        this._listaNegociacoes = new Bind(
+            new ListaNegociacoes(),
+            new NegociacoesView($('#negociacoesView')),
+            'adiciona', 'esvazia')
 
-        this._mensagemView = new MensagemView($('#mensagemView'));
         this._mensagem = new Bind(
-            new Mensagem(),
-            this._mensagemView,
-            ['texto']);
+            new Mensagem(), 
+            new MensagemView($('#mensagemView')),
+            'texto');
     }
 
     
@@ -35,7 +34,6 @@ class NegociacaoController{
 
         //Mensagem para o usuário
         this._mensagem.texto = 'Negociação adicionada com sucesso!';//Chama método SET
-        this._mensagemView.update(this._mensagem);
 
         //Limpa formulário
         this._limpaFormulario();
