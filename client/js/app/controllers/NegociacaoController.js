@@ -11,33 +11,18 @@ class NegociacaoController{
         this._inputQuantidade =  $('#quantidade');
         this._inputValor = $('#valor');
 
-
-        //GAMBIARRA QUE EU NÃO ENTENDI NADA
-        let self = this;
-        this._listaNegociacoes = new Proxy(new ListaNegociacoes(), {
-            get(target, prop, receiver) {
-                if(['adiciona', 'esvazia'].includes(prop) && typeof(target[prop]) == typeof(Function)) {
-                    return function(){
-                    console.log(`método '${prop}' interceptado`);
-                    Reflect.apply(target[prop], target, arguments);
-                    self._negociacoesView.update(target);
-                    }
-            }
-            return Reflect.get(target, prop, receiver);
-        }
-        });
-        
-
-        //Usado para renderizar a view
+        //Chamando Proxy -> eu passo meu model, o meu contexto e os métodos q eu vou observar para que quando forem acionados eu chamao o update
         this._negociacoesView = new NegociacoesView($('#negociacoesView'));
-        this._negociacoesView.update(this._listaNegociacoes);
+        this._listaNegociacoes = new Bind (
+                new ListaNegociacoes(),
+                this._negociacoesView,
+                ['adiciona', 'esvazia']);
 
-        
-
-        //Usando para mensagem para o usuário
-        this._mensagem = new Mensagem();
         this._mensagemView = new MensagemView($('#mensagemView'));
-        this._mensagemView.update(this._mensagem);
+        this._mensagem = new Bind(
+            new Mensagem(),
+            this._mensagemView,
+            ['texto']);
     }
 
     
@@ -54,16 +39,11 @@ class NegociacaoController{
 
         //Limpa formulário
         this._limpaFormulario();
-
-        console.log(this._listaNegociacoes.negociacoes);
     }
 
     apaga() {
         this._listaNegociacoes.esvazia();
-        this._negociacoesView.update(this._listaNegociacoes);
-    
         this._mensagem.texto = 'Negociações apagadas com sucesso';
-        this._mensagemView.update(this._mensagem);
     }
 
 
