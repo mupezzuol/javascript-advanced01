@@ -10,25 +10,34 @@
     
 
     <script>
+
+        var connection;
         
         //Faço uma requisição de abertura para meu indexedDB (banco do navegador)
         //windows -> Meu escopo da página etc...
-        var openRequest = window.indexedDB.open('jsavancado',1);
+        var openRequest = window.indexedDB.open('jsavancado',2);//1 -> versão, toda vez q eu crir um ObjectStore eu devo mudar esse numero para chamar o evento 'onupgradeneeded'
 
         //Quando o banco não existe ele passa por essa requisição de criação do banco
         //Ao executar pela primeira vez ele irá rodar isso + a mensagem de sucesso, na segunda vez ele rodará somente a msg de sucesso, pois o banco já foi criado, não passará por aqui
         openRequest.onupgradeneeded = e => {
             console.log('Cria ou altera um banco já existente');
+
+            var minhaConnection = e.target.result;
+            minhaConnection.createObjectStore('negociacoes');
+
         };
 
         //Se deu certo a abertura requisitada ele passa por aqui
         openRequest.onsuccess = e => {
             console.log('Conexão obtida com sucesso');
+
+            connection = e.target.result;//Resultado do sucesso que é minha conexão...
+
         };
 
         //Se algo deu errado ele passa por aqui
         openRequest.onerror = e => {
-            console.log(e.target.error);
+            console.log(e.target.error);//Error é o resultado que deixaremos em nossa variavel target... 'e' é de evento
         };    
         
     </script>
