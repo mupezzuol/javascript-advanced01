@@ -1,49 +1,78 @@
-class NegociacaoService{
+/*
+Então, quais são os ESTADOS possíveis de um requisição AJAX?
+    0: requisição ainda não iniciada
+    1: conexão com o servidor estabelecida
+    2: requisição recebida
+    3: processando requisição
+    4: requisição está concluída e a resposta está pronta
+*/
+class NegociacaoService {
 
 
-    //AJAX puro, sem JQuery
-    //cb -> CallBack
-    obterNegociacoesDaSemana(cb){
-        let xhr = new XMLHttpRequest();
+    obterNegociacoesDaSemana() {
+        return new Promise((resolve, reject) => {
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', 'negociacoes/semana');
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
 
-        //Preparo requisição AJAX, qual operação eu quero fazer
-        //Method -> GET
-        //URL -> Local, por isso está simplificada
-        xhr.open('GET', 'negociacoes/semana');
+                        resolve(JSON.parse(xhr.responseText)
+                            .map(objeto => new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor)));
 
-        //Antes de enviar minha requisição, devemos fazer pequenas configurações
-        //Toda vez que o ESTADO da minha requisição MUDAR eu vou executar essa ARROE FUNCTION
-        /*
-        Então, quais são os ESTADOS possíveis de um requisição AJAX?
-            0: requisição ainda não iniciada
-            1: conexão com o servidor estabelecida
-            2: requisição recebida
-            3: processando requisição
-            4: requisição está concluída e a resposta está pronta
-        */
-        xhr.onreadystatechange = () => {
-            //Estado 4 -> OK
-            if(xhr.readyState == 4) {
-                //Status da requisição 200 -> OK, diferente do ESTADO da requisição AJAX
-                if(xhr.status == 200) {
-                    //JSON.parse -> Converte meu retorno String/Text em uma Objeto JavaScript(JSON)
-                    //Faço um MAP, para cada Objeto retornado ele irá criar uma nova instancia de 'Negociacao' e no final ele retorna um ARRAY com essas instancias
-                    //Ficar esperto nos retornos, Datas etc....
-                    //CB -> Recebe primeiro parametro que é de erro como Null pois deu certo a requisicao, segundo paramentro ele retorna a lista em formato Array
-                    cb(null, JSON.parse(xhr.responseText)
-                        .map(objeto => new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor)));
-                } else {
-                    console.log(xhr.responseText);
-                    cb('Não foi possível obter as negociações da semana', null);//Retorno primeiro parametro a mensagem de Erro, e a negociacoes Null
-                }  
-            }
-        }
+                    } else {
+                        console.log(xhr.responseText);
+                        reject('Não foi possível obter as negociações da semana');
 
-        //Efetivar minha requisição
-        xhr.send();
+                    }
+                }
+            };
+            xhr.send();
+
+        })
     }
 
 
+    obterNegociacoesDaSemanaAnterior() {
+        return new Promise((resolve, reject) => {
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', 'negociacoes/anterior');
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        resolve(JSON.parse(xhr.responseText)
+                            .map(objeto => new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor)));
+
+                    } else {
+                        console.log(xhr.responseText);
+                        reject('Não foi possível obter as negociações da semana anterior');
+                    }
+                }
+            }
+            xhr.send();
+        });
+    }
+
+    
+    obterNegociacoesDaSemanaRetrasada() {
+        return new Promise((resolve, reject) => {
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', 'negociacoes/retrasada');
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        resolve(JSON.parse(xhr.responseText)
+                            .map(objeto => new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor)));
+
+                    } else {
+                        console.log(xhr.responseText);
+                        reject('Não foi possível obter as negociações da semana retrasada');
+                    }
+                }
+            }
+            xhr.send();
+        });
+    }
 
 
 }

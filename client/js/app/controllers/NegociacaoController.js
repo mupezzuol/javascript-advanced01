@@ -44,19 +44,26 @@ class NegociacaoController {
     importaNegociacoes() {
         let service = new NegociacaoService();
 
-        service.obterNegociacoesDaSemana((erro, negociacoes) => {
-
-            //Se erro retornar TRUE é pq deu Erro, atualiza a msg
-            if (erro) {
-                this._mensagem.texto = erro;
-                return;
-            }
-
-            //Se não caiu no IF deu certo e nosso segundo parametro é nosso Array retornado pelo JSON
-            //Para cada Item do Array nós fazemos um forEach para adicionar em nossa tabela a negociação
+        service.obterNegociacoesDaSemana()
+        .then(negociacoes => {
             negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
-            this._mensagem.texto = 'Negociações importadas com sucesso';//Atualizamos a mensagem na view
-        });
+            this._mensagem.texto = 'Negociações da semana obtidas com sucesso';
+        })
+        .catch(erro => this._mensagem.texto = erro);
+
+        service.obterNegociacoesDaSemanaAnterior()
+        .then(negociacoes => {
+            negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
+            this._mensagem.texto = 'Negociações da semana obtidas com sucesso';
+        })
+        .catch(erro => this._mensagem.texto = erro);
+
+        service.obterNegociacoesDaSemanaRetrasada()
+        .then(negociacoes => {
+            negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
+            this._mensagem.texto = 'Negociações da semana obtidas com sucesso';
+        })
+        .catch(erro => this._mensagem.texto = erro);
     }
 
 
