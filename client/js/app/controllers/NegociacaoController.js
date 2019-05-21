@@ -1,5 +1,5 @@
 //Minha Controller
-class NegociacaoController{
+class NegociacaoController {
 
     constructor() {
         //Usando padrão utilizado no JQuery para facilitar busca
@@ -8,7 +8,7 @@ class NegociacaoController{
 
         //Crio atributos com os valores do inputs para que o meu DOM seja percorrido uma vez, questão de performace
         this._inputData = $('#data');//Retorna String no formato (aaaa-MM-dd), não Date()
-        this._inputQuantidade =  $('#quantidade');
+        this._inputQuantidade = $('#quantidade');
         this._inputValor = $('#valor');
 
         //Chamando Proxy -> eu passo meu model, o meu contexto e os métodos q eu vou observar para que quando forem acionados eu chamao o update
@@ -19,14 +19,14 @@ class NegociacaoController{
             'adiciona', 'esvazia')
 
         this._mensagem = new Bind(
-            new Mensagem(), 
+            new Mensagem(),
             new MensagemView($('#mensagemView')),
             'texto');
     }
 
-    
+
     //Método de ADC
-    adiciona(event){
+    adiciona(event) {
         event.preventDefault();//Não recarrega a página após o submit
 
         //Criando uma Negociação e Adicionando a negociacao em uma lista de negociacoes
@@ -41,47 +41,26 @@ class NegociacaoController{
 
 
     //AJAX puro, sem JQuery
-    importaNegociacoes(){
-        let xhr = new XMLHttpRequest();
+    importaNegociacoes() {
+        let service = new NegociacaoService();
 
-        //Preparo requisição AJAX, qual operação eu quero fazer
-        //Method -> GET
-        //URL -> Local, por isso está simplificada
-        xhr.open('GET', 'negociacoes/semana');
+        service.obterNegociacoesDaSemana((erro, negociacoes) => {
 
-        //Antes de enviar minha requisição, devemos fazer pequenas configurações
-        //Toda vez que o ESTADO da minha requisição MUDAR eu vou executar essa ARROE FUNCTION
-        /*
-        Então, quais são os ESTADOS possíveis de um requisição AJAX?
-            0: requisição ainda não iniciada
-            1: conexão com o servidor estabelecida
-            2: requisição recebida
-            3: processando requisição
-            4: requisição está concluída e a resposta está pronta
-        */
-        xhr.onreadystatechange = () => {
-            //Estado 4 -> OK
-            if(xhr.readyState == 4){
-                //Status da requisição 200 -> OK, diferente do ESTADO da requisição AJAX
-                if(xhr.status == 200){
-                    //JSON.parse -> Converte meu retorno String/Text em uma Objeto JavaScript(JSON)
-                    //Faço um MAP, para cada Objeto retornado ele irá criar uma nova instancia de 'Negociacao' e no final ele retorna um ARRAY com essas instancias
-                    //Faço um forEach, para percorrer meu array de instancia, para cada item(negociacao) eu adiciono um novo item(cria, adc, coloca na table etc...)
-                    //Ficar esperto nos retornos, Datas etc....
-                    JSON.parse(xhr.responseText)
-                        .map(objeto => new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor))
-                        .forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
-                        this._mensagem.texto = 'Negociações semanais importadas com sucesso!';
-                }else{
-                    console.log(xhr.responseText);
-                    this._mensagem.texto = 'Não foi possível obter as negociações da semana';//Usa método SET e atualiza nossa VIEW pelo escutador já implementado
-                }
+            //Se erro retornar TRUE é pq deu Erro, atualiza a msg
+            if (erro) {
+                this._mensagem.texto = erro;
+                return;
             }
-        };
 
-        //Efetivar minha requisição
-        xhr.send();
+            //Se não caiu no IF deu certo e nosso segundo parametro é nosso Array retornado pelo JSON
+            //Para cada Item do Array nós fazemos um forEach para adicionar em nossa tabela a negociação
+            negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
+            this._mensagem.texto = 'Negociações importadas com sucesso';//Atualizamos a mensagem na view
+        });
     }
+
+
+
 
     apaga() {
         this._listaNegociacoes.esvazia();
@@ -90,7 +69,7 @@ class NegociacaoController{
 
 
     //Cria uma Negociação
-    _criaNegociacao(){
+    _criaNegociacao() {
         //Criando obj pelo Construtor dele, já passando os valores dos campos
         return new Negociacao(
             DateHelper.textoParaData(this._inputData.value),
@@ -107,6 +86,5 @@ class NegociacaoController{
 
         this._inputData.focus();
     }
-
 
 }
