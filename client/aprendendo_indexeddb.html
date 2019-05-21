@@ -73,6 +73,40 @@
             };
         }
 
+        function listaTodos() {
+
+            let transaction = connection.transaction(['negociacoes'], 'readwrite');//Crio transação
+            let store = transaction.objectStore("negociacoes");//Pego minha ObjectStore
+            
+            let negociacoes = [];//Crio um array de negociacoes
+
+            let cursor = store.openCursor();//Abro um PONTEIRO
+
+            //Evento do Ponteiro
+            cursor.onsuccess = e => {
+                let atual = e.target.result;//é meu ponteiro atual, onde está apontando, para os registros etc...
+
+                //Se o ponteiro apontar para os dados ele retorna TRUE e entra no IF, caso contrário não tem dado e vai para o ELSE
+                if (atual) {
+
+                    let dado = atual.value;//Valor do primeiro registro do ponteiro
+
+                    //Adc negociacao do valor que veio do ponteiro
+                    negociacoes.push(new Negociacao(dado._data, dado._quantidade, dado._valor));
+
+                    //Faço um continue, para que qnd tiver mais registro, o ponteiro apontar para mais registro ele continua a iteração do ONSUCCESS até acabar o ponteiro
+                    atual.continue();
+                } else {
+                    console.log(negociacoes);//Após acabar os registros q o ponteiro aponta ele mostra para nós nossa ARRAY que veio do nosso ObjectStore
+                }
+            };
+
+            //Se der erro em nosso PONTEIRO
+            cursor.onerror = e => {
+                console.log('Error:' + e.target.error.name);
+            };
+        }
+
     </script>
 
 
