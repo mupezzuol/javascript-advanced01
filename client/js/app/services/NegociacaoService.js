@@ -1,76 +1,58 @@
-/*
-Então, quais são os ESTADOS possíveis de um requisição AJAX?
-    0: requisição ainda não iniciada
-    1: conexão com o servidor estabelecida
-    2: requisição recebida
-    3: processando requisição
-    4: requisição está concluída e a resposta está pronta
-*/
+
 class NegociacaoService {
 
+    constructor() {
+        this.http = new HttpService();
+    }
 
+    //Chamado método GET via AJAX segregado em nossa classe HttpService
+    // Ele retorna uma Promise, portanto eu uso método 'then', ou seja, então faça...
+    // Passo uma Arrow Function pegando o 'resolve' que é meu resultado e criando uma nova negociação e adc na tabela
+    // Faço 'cath' para pegar os erros via 'reject' que pode acontecer nas promise, erros respectivos, 
     obterNegociacoesDaSemana() {
         return new Promise((resolve, reject) => {
-            let xhr = new XMLHttpRequest();
-            xhr.open('GET', 'negociacoes/semana');
-            xhr.onreadystatechange = () => {
-                if (xhr.readyState == 4) {
-                    if (xhr.status == 200) {
-
-                        resolve(JSON.parse(xhr.responseText)
-                            .map(objeto => new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor)));
-
-                    } else {
-                        console.log(xhr.responseText);
-                        reject('Não foi possível obter as negociações da semana');
-
-                    }
-                }
-            };
-            xhr.send();
-
-        })
+            this.http
+                .get('negociacoes/semana')
+                .then(negociacoes => {
+                    resolve(negociacoes.map(objeto => new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor)));
+                })
+                .catch(erro => {
+                    console.log(erro);
+                    reject('Não foi possível obter as negociações da semana');
+                })
+        });
     }
 
 
     obterNegociacoesDaSemanaAnterior() {
         return new Promise((resolve, reject) => {
-            let xhr = new XMLHttpRequest();
-            xhr.open('GET', 'negociacoes/anterior');
-            xhr.onreadystatechange = () => {
-                if (xhr.readyState == 4) {
-                    if (xhr.status == 200) {
-                        resolve(JSON.parse(xhr.responseText)
-                            .map(objeto => new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor)));
+            this.http
+                .get('negociacoes/anterior')
+                .then(negociacoes => {
+                    //console.log(negociacoes);
+                    resolve(negociacoes.map(objeto => new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor)));
 
-                    } else {
-                        console.log(xhr.responseText);
-                        reject('Não foi possível obter as negociações da semana anterior');
-                    }
-                }
-            }
-            xhr.send();
+                })
+                .catch(erro => {
+                    console.log(erro);
+                    reject('Não foi possível obter as negociações da semana anterior');
+                })
         });
     }
 
-    
     obterNegociacoesDaSemanaRetrasada() {
         return new Promise((resolve, reject) => {
-            let xhr = new XMLHttpRequest();
-            xhr.open('GET', 'negociacoes/retrasada');
-            xhr.onreadystatechange = () => {
-                if (xhr.readyState == 4) {
-                    if (xhr.status == 200) {
-                        resolve(JSON.parse(xhr.responseText)
-                            .map(objeto => new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor)));
+            this.http
+                .get('negociacoes/retrasada')
+                .then(negociacoes => {
+                    //console.log(negociacoes);
+                    resolve(negociacoes.map(objeto => new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor)));
 
-                    } else {
-                        console.log(xhr.responseText);
-                        reject('Não foi possível obter as negociações da semana retrasada');
-                    }
-                }
-            }
-            xhr.send();
+                })
+                .catch(erro => {
+                    console.log(erro);
+                    reject('Não foi possível obter as negociações da semana retrasada');
+                })
         });
     }
 
