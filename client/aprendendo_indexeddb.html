@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>IndexedDB</title>
+</head>
+<body>
+    
+
+    <script>
+        
+        //Faço uma requisição de abertura para meu indexedDB (banco do navegador)
+        //windows -> Meu escopo da página etc...
+        var openRequest = window.indexedDB.open('jsavancado',1);
+
+        //Quando o banco não existe ele passa por essa requisição de criação do banco
+        //Ao executar pela primeira vez ele irá rodar isso + a mensagem de sucesso, na segunda vez ele rodará somente a msg de sucesso, pois o banco já foi criado, não passará por aqui
+        openRequest.onupgradeneeded = e => {
+            console.log('Cria ou altera um banco já existente');
+        };
+
+        //Se deu certo a abertura requisitada ele passa por aqui
+        openRequest.onsuccess = e => {
+            console.log('Conexão obtida com sucesso');
+        };
+
+        //Se algo deu errado ele passa por aqui
+        openRequest.onerror = e => {
+            console.log(e.target.error);
+        };    
+        
+    </script>
+
+
+</body>
+</html>
