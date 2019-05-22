@@ -1,98 +1,121 @@
-//Minha Controller
-class NegociacaoController {
+'use strict';
 
-    constructor() {
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+//Minha Controller
+var NegociacaoController = function () {
+    function NegociacaoController() {
+        _classCallCheck(this, NegociacaoController);
+
         //Usando padrão utilizado no JQuery para facilitar busca
         //Usando bind para que o this da classe do seletor permaneca na instancia do objeto 'document', para que possamos usar através da nossa variacel '$'
-        let $ = document.querySelector.bind(document);
+        var $ = document.querySelector.bind(document);
 
         //Crio atributos com os valores do inputs para que o meu DOM seja percorrido uma vez, questão de performace
-        this._inputData = $('#data');//Retorna String no formato (aaaa-MM-dd), não Date()
+        this._inputData = $('#data'); //Retorna String no formato (aaaa-MM-dd), não Date()
         this._inputQuantidade = $('#quantidade');
         this._inputValor = $('#valor');
 
         //Chamando Proxy -> eu passo meu model, o meu contexto e os métodos q eu vou observar para que quando forem acionados eu chamao o update
         //já chamo nossa View etc... chamando métodos isolados para nos auxiliar nisso
-        this._listaNegociacoes = new Bind(
-            new ListaNegociacoes(),
-            new NegociacoesView($('#negociacoesView')),
-            'adiciona', 'esvazia')
+        this._listaNegociacoes = new Bind(new ListaNegociacoes(), new NegociacoesView($('#negociacoesView')), 'adiciona', 'esvazia');
 
-        this._mensagem = new Bind(
-            new Mensagem(),
-            new MensagemView($('#mensagemView')),
-            'texto');
+        this._mensagem = new Bind(new Mensagem(), new MensagemView($('#mensagemView')), 'texto');
 
         this._service = new NegociacaoService();
         this._init();
     }
 
-    _init() {
-        this._service
-            .lista()
-            .then(negociacoes =>
-                negociacoes.forEach(negociacao =>
-                    this._listaNegociacoes.adiciona(negociacao)))
-            .catch(erro => this._mensagem.texto = erro);
+    _createClass(NegociacaoController, [{
+        key: '_init',
+        value: function _init() {
+            var _this = this;
 
-        setInterval(() => {
-            this.importaNegociacoes();
-        }, 3000);
-    }
+            this._service.lista().then(function (negociacoes) {
+                return negociacoes.forEach(function (negociacao) {
+                    return _this._listaNegociacoes.adiciona(negociacao);
+                });
+            }).catch(function (erro) {
+                return _this._mensagem.texto = erro;
+            });
 
+            setInterval(function () {
+                _this.importaNegociacoes();
+            }, 3000);
+        }
 
-    //Método de ADC
-    adiciona(event) {
-        event.preventDefault();
+        //Método de ADC
 
-        let negociacao = this._criaNegociacao();
-        new NegociacaoService()
-            .cadastra(negociacao)
-            .then(mensagem => {
-                this._listaNegociacoes.adiciona(negociacao);
-                this._mensagem.texto = mensagem;
-                this._limpaFormulario();
-            }).catch(erro => this._mensagem.texto = erro);
-    }
+    }, {
+        key: 'adiciona',
+        value: function adiciona(event) {
+            var _this2 = this;
 
-    //AJAX puro, sem JQuery
-    importaNegociacoes() {
-        this._service
-            .importa(this._listaNegociacoes.negociacoes)
-            .then(negociacoes => negociacoes.forEach(negociacao => {
-                this._listaNegociacoes.adiciona(negociacao);
-                this._mensagem.texto = 'Negociações do período importadas'
-            }))
-            .catch(erro => this._mensagem.texto = erro);
-    }
+            event.preventDefault();
 
-    apaga() {
-        this._service
-            .apaga()
-            .then(mensagem => {
-                this._mensagem.texto = mensagem;
-                this._listaNegociacoes.esvazia();
-            })
-            .catch(erro => this._mensagem.texto = erro);
-    }
+            var negociacao = this._criaNegociacao();
+            new NegociacaoService().cadastra(negociacao).then(function (mensagem) {
+                _this2._listaNegociacoes.adiciona(negociacao);
+                _this2._mensagem.texto = mensagem;
+                _this2._limpaFormulario();
+            }).catch(function (erro) {
+                return _this2._mensagem.texto = erro;
+            });
+        }
 
+        //AJAX puro, sem JQuery
 
-    //Cria uma Negociação
-    _criaNegociacao() {
-        //Criando obj pelo Construtor dele, já passando os valores dos campos
-        return new Negociacao(
-            DateHelper.textoParaData(this._inputData.value),
-            parseInt(this._inputQuantidade.value),
-            parseFloat(this._inputValor.value));
-    }
+    }, {
+        key: 'importaNegociacoes',
+        value: function importaNegociacoes() {
+            var _this3 = this;
 
-    //Só a classe pode chamar o método, por isso foi usado a convenção '_'
-    _limpaFormulario() {
-        this._inputData.value = '';
-        this._inputQuantidade.value = 1;
-        this._inputValor.value = 0.0
+            this._service.importa(this._listaNegociacoes.negociacoes).then(function (negociacoes) {
+                return negociacoes.forEach(function (negociacao) {
+                    _this3._listaNegociacoes.adiciona(negociacao);
+                    _this3._mensagem.texto = 'Negociações do período importadas';
+                });
+            }).catch(function (erro) {
+                return _this3._mensagem.texto = erro;
+            });
+        }
+    }, {
+        key: 'apaga',
+        value: function apaga() {
+            var _this4 = this;
 
-        this._inputData.focus();
-    }
+            this._service.apaga().then(function (mensagem) {
+                _this4._mensagem.texto = mensagem;
+                _this4._listaNegociacoes.esvazia();
+            }).catch(function (erro) {
+                return _this4._mensagem.texto = erro;
+            });
+        }
 
-}
+        //Cria uma Negociação
+
+    }, {
+        key: '_criaNegociacao',
+        value: function _criaNegociacao() {
+            //Criando obj pelo Construtor dele, já passando os valores dos campos
+            return new Negociacao(DateHelper.textoParaData(this._inputData.value), parseInt(this._inputQuantidade.value), parseFloat(this._inputValor.value));
+        }
+
+        //Só a classe pode chamar o método, por isso foi usado a convenção '_'
+
+    }, {
+        key: '_limpaFormulario',
+        value: function _limpaFormulario() {
+            this._inputData.value = '';
+            this._inputQuantidade.value = 1;
+            this._inputValor.value = 0.0;
+
+            this._inputData.focus();
+        }
+    }]);
+
+    return NegociacaoController;
+}();
+//# sourceMappingURL=NegociacaoController.js.map

@@ -1,3 +1,6 @@
+/*
+
+
 var support = {
     searchParams: 'URLSearchParams' in self,
     iterable: 'Symbol' in self && 'iterator' in Symbol,
@@ -513,4 +516,9 @@ var support = {
     self.Headers = Headers
     self.Request = Request
     self.Response = Response
-  
+  }
+
+
+  */
+"use strict";
+//# sourceMappingURL=fetch.js.map
