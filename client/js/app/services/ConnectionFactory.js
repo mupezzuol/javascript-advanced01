@@ -2,9 +2,12 @@
 var ConnectionFactory = (function () {
 
     //Vars de conexão, ngm acessa, pois a função anoniam retorna somente a classe
-    var stores = ['negociacoes'];
-    var version = 2;
-    var dbName = 'jsavancado';
+    const stores = ['negociacoes'];
+    const version = 1;
+    const dbName = 'jsavancado';
+
+    var connection = null;
+    var close = null;
 
     return class ConnectionFactory {
         //Faço com que não seja possivel instanciar essa classe
@@ -23,6 +26,16 @@ var ConnectionFactory = (function () {
                 };
 
                 openRequest.onsuccess = e => {
+
+                    //Se não tiver conexão
+                    if(!connection) {
+                        connection = e.target.result;
+                        close = connection.close;
+                        connection.close = function() {
+                              throw new Error('Você não pode fechar diretamente a conexão');
+                        };
+                    }
+
                     resolve(e.target.result);
                 };
 
@@ -41,6 +54,14 @@ var ConnectionFactory = (function () {
                 }
                 connection.createObjectStore(store, { autoIncrement: true });
             });
+        }
+
+
+        static closeConnection() {
+            if(connection) {
+                Reflect.apply(close, connection, [])
+                connection = null;
+            }
         }
 
 
