@@ -39,7 +39,7 @@ class NegociacaoController {
                 console.log(erro);
                 this._mensagem.texto = erro;
             });
-        
+
         //Atualizando sozinho a cada 3 segundos
         setInterval(() => {
             this.importaNegociacoes();
@@ -51,19 +51,14 @@ class NegociacaoController {
     adiciona(event) {
         event.preventDefault();
 
-        ConnectionFactory
-            .getConnection()
-            .then(conexao => {
-                let negociacao = this._criaNegociacao();
-                new NegociacaoDao(conexao)
-                    .adiciona(negociacao)
-                    .then(() => {
-                        this._listaNegociacoes.adiciona(negociacao);
-                        this._mensagem.texto = 'Negociação adicionada com sucesso';
-                        this._limpaFormulario();
-                    });
-            })
-            .catch(erro => this._mensagem.texto = erro);
+        let negociacao = this._criaNegociacao();
+        new NegociacaoService()
+            .cadastra(negociacao)
+            .then(mensagem => {
+                this._listaNegociacoes.adiciona(negociacao);
+                this._mensagem.texto = mensagem;
+                this._limpaFormulario();
+            }).catch(erro => this._mensagem.texto = erro);
     }
 
     //AJAX puro, sem JQuery
