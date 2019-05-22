@@ -60,20 +60,18 @@ class NegociacaoController {
     //AJAX puro, sem JQuery
     importaNegociacoes() {
         let service = new NegociacaoService();
-
-        //Promise.All -> Recebe um array de promise para executar na ordem
-        //Usamos o reduce para concatenar o resultado dos arrays de cada promise em um unico array, para depois fazermos o forEach
-        Promise.all([
-            service.obterNegociacoesDaSemana(),
-            service.obterNegociacoesDaSemanaAnterior(),
-            service.obterNegociacoesDaSemanaRetrasada()]
-        ).then(negociacoes => {
-            negociacoes
-                .reduce((arrayAchatado, array) => arrayAchatado.concat(array), [])
-                .forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
-            this._mensagem.texto = 'Negociações importadas com sucesso';
-        })
-            .catch(erro => this._mensagem.texto = erro);//Pego o erro que retorna sobre a respectiva promise
+        service
+            .obterNegociacoes()
+            .then(negociacoes =>
+                negociacoes.filter(negociacao =>
+                    !this._listaNegociacoes.negociacoes.some(negociacaoExistente =>
+                        JSON.stringify(negociacao) == JSON.stringify(negociacaoExistente)))
+            )
+            .then(negociacoes => negociacoes.forEach(negociacao => {
+                this._listaNegociacoes.adiciona(negociacao);
+                this._mensagem.texto = 'Negociações do período importadas'
+            }))
+            .catch(erro => this._mensagem.texto = erro);
     }
 
 
