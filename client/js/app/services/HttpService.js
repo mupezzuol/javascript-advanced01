@@ -10,7 +10,7 @@ class HttpService {
 
     //Se minha resposta não for OK eu lanço erro, caso contrário eu retorno ela mesmo para seguir a requisição normalemente
     _handleErrors(res) {
-        if(!res.ok) throw new Error(res.statusText);
+        if (!res.ok) throw new Error(res.statusText);
         return res;
     }
 
@@ -25,22 +25,12 @@ class HttpService {
 
 
     post(url, dado) {
-        return new Promise((resolve, reject) => {
-            let xhr = new XMLHttpRequest();
-            xhr.open("POST", url, true);
-            xhr.setRequestHeader("Content-type", "application/json");
-            xhr.onreadystatechange = () => {
-
-                if (xhr.readyState == 4) {
-                    if (xhr.status == 200) {
-                        resolve(JSON.parse(xhr.responseText));
-                    } else {
-                        reject(xhr.responseText);
-                    }
-                }
-            };
-            xhr.send(JSON.stringify(dado)); // usando JSON.stringifly para converter objeto em uma string no formato JSON.
-        });
+        return fetch(url, {
+            headers: { 'Content-Type': 'application/json' },
+            method: 'post',
+            body: JSON.stringify(dado)
+        })
+            .then(res => this._handleErrors(res));
     }
 
 
