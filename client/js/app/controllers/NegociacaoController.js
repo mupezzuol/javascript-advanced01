@@ -27,18 +27,22 @@ class NegociacaoController {
 
     //Método de ADC
     adiciona(event) {
-        event.preventDefault();//Não recarrega a página após o submit
+        event.preventDefault();
 
-        //Criando uma Negociação e Adicionando a negociacao em uma lista de negociacoes
-        this._listaNegociacoes.adiciona(this._criaNegociacao());
-
-        //Mensagem para o usuário
-        this._mensagem.texto = 'Negociação adicionada com sucesso!';//Chama método SET
-
-        //Limpa formulário
-        this._limpaFormulario();
+        ConnectionFactory
+            .getConnection()
+            .then(conexao => {
+                let negociacao = this._criaNegociacao();
+                new NegociacaoDao(conexao)
+                    .adiciona(negociacao)
+                    .then(() => {
+                        this._listaNegociacoes.adiciona(negociacao);
+                        this._mensagem.texto = 'Negociação adicionada com sucesso';
+                        this._limpaFormulario();
+                    });
+            })
+            .catch(erro => this._mensagem.texto = erro);
     }
-
 
     //AJAX puro, sem JQuery
     importaNegociacoes() {
@@ -73,9 +77,8 @@ class NegociacaoController {
         //Criando obj pelo Construtor dele, já passando os valores dos campos
         return new Negociacao(
             DateHelper.textoParaData(this._inputData.value),
-            this._inputQuantidade.value,
-            this._inputValor.value
-        );
+            parseInt(this._inputQuantidade.value),
+            parseFloat(this._inputValor.value));
     }
 
     //Só a classe pode chamar o método, por isso foi usado a convenção '_'
