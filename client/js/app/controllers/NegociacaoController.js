@@ -23,7 +23,10 @@ class NegociacaoController {
             new MensagemView($('#mensagemView')),
             'texto');
 
+        this._init();
+    }
 
+    _init() {
         //Trazendo os dados do banco e atualizando nossa tabela
         ConnectionFactory
             .getConnection()
@@ -33,8 +36,14 @@ class NegociacaoController {
                 negociacoes.forEach(negociacao =>
                     this._listaNegociacoes.adiciona(negociacao)))
             .catch(erro => {
+                console.log(erro);
                 this._mensagem.texto = erro;
             });
+        
+        //Atualizando sozinho a cada 3 segundos
+        setInterval(() => {
+            this.importaNegociacoes();
+        }, 3000);
     }
 
 
