@@ -8,24 +8,19 @@ Então, quais são os ESTADOS possíveis de um requisição AJAX?
 */
 class HttpService {
 
+    //Se minha resposta não for OK eu lanço erro, caso contrário eu retorno ela mesmo para seguir a requisição normalemente
+    _handleErrors(res) {
+        if(!res.ok) throw new Error(res.statusText);
+        return res;
+    }
 
-    //Requisição GET
+    //AJAX COM 'Fetch API'
+    //Fetch API aceita Promise, portanto uso o 'then' para chamar o método para enviar minha 'res' que tem uma propriedade '.ok' dizendo seu status
+    //res.json -> Digo qual meu retorno da requisição, no formato JSON, já faz todo parse necessario
     get(url) {
-        return new Promise((resolve, reject) => {
-            let xhr = new XMLHttpRequest();
-            xhr.open('GET', url);
-            xhr.onreadystatechange = () => {
-                if (xhr.readyState == 4) {
-                    if (xhr.status == 200) {
-                        resolve(JSON.parse(xhr.responseText));
-                    } else {
-                        console.log(xhr.responseText);
-                        reject(xhr.responseText);
-                    }
-                }
-            }
-            xhr.send();
-        });
+        return fetch(url)
+            .then(res => this._handleErrors(res))
+            .then(res => res.json());
     }
 
 
