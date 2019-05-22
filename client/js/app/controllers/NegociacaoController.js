@@ -22,6 +22,16 @@ class NegociacaoController {
             new Mensagem(),
             new MensagemView($('#mensagemView')),
             'texto');
+        
+
+        //Trazendo os dados do banco e atualizando nossa tabela
+        ConnectionFactory
+            .getConnection()
+            .then(connection => new NegociacaoDao(connection))
+            .then(dao => dao.listaTodos())
+            .then(negociacoes =>
+                negociacoes.forEach(negociacao =>
+                    this._listaNegociacoes.adiciona(negociacao)))
     }
 
 
